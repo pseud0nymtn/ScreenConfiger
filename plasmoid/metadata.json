@@ -1,0 +1,16 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [{ "Name": "ScreenConfiger" }],
+        "Category": "System Information",
+        "Description": "Switch a display output on or off. Long press opens the display settings.",
+        "Description[de]": "Schaltet einen Bildschirmausgang an oder aus. Langer Klick öffnet die Anzeigeeinstellungen.",
+        "Icon": "preferences-desktop-display",
+        "Id": "org.kde.screenconfiger",
+        "License": "MIT",
+        "Name": "Screen Switch",
+        "Name[de]": "Bildschirm-Schalter",
+        "Version": "0.1.0"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}
