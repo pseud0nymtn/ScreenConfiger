@@ -1,67 +1,69 @@
 # ScreenConfiger – Screen Switch (KDE Plasma 6 Widget)
 
-Ein kleines Plasma-Widget, das wie ein Schalter aussieht und einen Bildschirmausgang (z. B. `DP-2`, `HDMI-A-1`) an- oder ausschaltet. Es funktioniert sowohl im **Panel** als auch auf dem **Desktop**.
+A small Plasma widget that looks like a switch and turns a display output (e.g. `DP-2`, `HDMI-A-1`) on or off. It works in a **panel** as well as on the **desktop**.
 
-- **Klick** auf den Schalter: Ausgang an/aus
-- **Langer Klick**: öffnet die Systemeinstellungen direkt in der *Anzeige-Konfiguration* (`kcm_kscreen`)
-- Der Zustand wird alle 5 Sekunden aktualisiert (z. B. wenn der Ausgang an anderer Stelle geändert wurde).
-- Sicherheitsnetz: der letzte aktive Ausgang kann nicht abgeschaltet werden.
+- **Click** the switch: turn the output on/off
+- **Long press**: opens System Settings directly in *Display Configuration* (`kcm_kscreen`)
+- The state is refreshed every 5 seconds (e.g. if the output was changed elsewhere).
+- The configuration dialog shows monitors by manufacturer and model (read from EDID), e.g. `Dell AW2725D (DP-2)`.
+- Safety net: the last active output cannot be switched off.
 
-## Aufbau
+## Structure
 
-| Teil | Beschreibung |
-|------|--------------|
-| `src/main.rs` | Rust-Helfer `screenconfiger` (Backend). Liest und schaltet Ausgänge über `kscreen-doctor` und öffnet `kcmshell6 kcm_kscreen`. |
-| `plasmoid/` | Plasma-Widget (QML-UI), das den Helfer aufruft. Plasma-Widgets selbst müssen in QML geschrieben werden, die Logik liegt in Rust. |
+| Part | Description |
+|------|-------------|
+| `src/main.rs` | Rust helper `screenconfiger` (backend). Reads and switches outputs via `kscreen-doctor` and opens `kcmshell6 kcm_kscreen`. |
+| `plasmoid/` | Plasma widget (QML UI) that calls the helper. Plasma widgets themselves must be written in QML; the logic lives in Rust. |
 
-Befehle des Helfers:
+Helper commands:
 
 ```
-screenconfiger list              # verbundene Ausgänge als JSON
-screenconfiger status <Ausgang>  # on | off
-screenconfiger toggle <Ausgang>
-screenconfiger on|off <Ausgang>
-screenconfiger settings          # Anzeige-Konfiguration öffnen
+screenconfiger list              # connected outputs as JSON
+screenconfiger status <output>   # on | off
+screenconfiger toggle <output>
+screenconfiger on|off <output>
+screenconfiger settings          # open Display Configuration
 ```
 
-## Voraussetzungen
+## Requirements
 
-- KDE Plasma 6 (inkl. `kscreen-doctor`, `kcmshell6`, `kpackagetool6`)
-- Rust (Cargo, Edition 2024 → Rust ≥ 1.85)
+- KDE Plasma 6 (including `kscreen-doctor`, `kcmshell6`, `kpackagetool6`)
+- Rust (Cargo, edition 2024 → Rust ≥ 1.85)
+- Optional: `hwdata` (`/usr/share/hwdata/pnp.ids`) to show full manufacturer names
 
-## Bauen
+## Build
 
 ```sh
 cargo build --release
 ```
 
-Das Binary liegt danach in `target/release/screenconfiger`.
+The binary is then located at `target/release/screenconfiger`.
 
-## Installieren
+## Install
 
 ```sh
 ./install.sh
 ```
 
-Das Skript baut den Helfer, kopiert ihn nach `~/.local/bin/screenconfiger` und installiert das Widget per `kpackagetool6` für den aktuellen Benutzer. Ein erneutes Ausführen aktualisiert das Widget. Falls das Widget nicht in der Liste erscheint, Plasma neu starten:
+The script builds the helper, copies it to `~/.local/bin/screenconfiger` and installs the widget for the current user via `kpackagetool6`. Running it again updates the widget. If the widget does not show up in the list, restart Plasma:
 
 ```sh
 systemctl --user restart plasma-plasmashell.service
 ```
 
-Danach: Rechtsklick auf Panel/Desktop → *Miniprogramme hinzufügen* → **Screen Switch**.
+Then: right-click the panel/desktop → *Add Widgets* → **Screen Switch**.
 
-## Einrichten
+## Configure
 
-Rechtsklick auf das Widget → *Screen Switch konfigurieren…* und den gewünschten Ausgang auswählen. Solange keiner gewählt ist, öffnet ein Klick die Anzeigeeinstellungen.
+Right-click the widget → *Configure Screen Switch…* and select the desired output. As long as none is selected, a click opens the display settings.
 
-## Deinstallieren
+## Uninstall
 
 ```sh
 ./uninstall.sh
 ```
 
-## Hinweise
+## Notes
 
-- Der Helfer muss unter `~/.local/bin` (oder `/usr/local/bin`) liegen, damit das Widget ihn findet.
-- Das Widget wurde für Plasma 6 geschrieben; für Plasma 5 sind Anpassungen nötig.
+- The helper must be located in `~/.local/bin` (or `/usr/local/bin`) so the widget can find it.
+- The widget is written for Plasma 6; Plasma 5 would require adjustments.
